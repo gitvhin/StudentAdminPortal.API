@@ -1,4 +1,4 @@
-﻿namespace StudentAdminPortal.API.DataModels
+﻿namespace StudentAdminPortal.API.DataModels.Domain
 {
     public class Student
     {
@@ -8,7 +8,7 @@
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
-        public string ProfileImageUrl { get; set; }
+        public string? ProfileImageUrl { get; set; }
         public Guid GenderId { get; set; }
 
         // Navigation Properties

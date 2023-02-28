@@ -52,8 +52,8 @@ namespace StudentAdminPortal.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PhysicalAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhysicalAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostalAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
