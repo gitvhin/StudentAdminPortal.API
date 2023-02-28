@@ -5,6 +5,17 @@ using StudentAdminPortal.API.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("angularApplication",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // note the port is included 
+                .AllowAnyHeader()
+                .WithMethods("GET", "POST", "PUT", "DELETE")
+                .WithExposedHeaders("*");
+        });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -20,12 +31,15 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("angularApplication");
 
 app.UseHttpsRedirection();
 
