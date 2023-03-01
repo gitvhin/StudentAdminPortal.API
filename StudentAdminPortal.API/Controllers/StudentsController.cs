@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using StudentAdminPortal.API.DataModels.Domain;
 using StudentAdminPortal.API.DataModels.DTO;
@@ -86,6 +87,18 @@ namespace StudentAdminPortal.API.Controllers
                 {
                     return Ok(mapper.Map<DataModels.DTO.Student>(updateStudent));
                 }
+            }
+            return NotFound();
+        }
+
+        [HttpDelete]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> DeleteStudentAsyc([FromRoute] Guid studentId)
+        {
+            if (await sqlStudentRepository.Exists(studentId))
+            {
+                var student = await sqlStudentRepository.DeleteStudent(studentId);
+                return Ok(mapper.Map<DataModels.DTO.Student>(student));
             }
             return NotFound();
         }
