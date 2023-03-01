@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
-using StudentAdminPortal.API.DataModels.Domain;
-using StudentAdminPortal.API.DataModels.DTO;
 using StudentAdminPortal.API.Repositories;
 using System.Collections.Generic;
 
@@ -63,7 +61,7 @@ namespace StudentAdminPortal.API.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{studentId:guid}")]
+        [Route("[controller]/{studentId:guid}"), ActionName("GetStudentByIdAsync")]
         public async Task<IActionResult> GetStudentByIdAsync([FromRoute] Guid studentId)
         {
             var student = await sqlStudentRepository.GetStudentByIdAsync(studentId);
@@ -101,6 +99,16 @@ namespace StudentAdminPortal.API.Controllers
                 return Ok(mapper.Map<DataModels.DTO.Student>(student));
             }
             return NotFound();
+        }
+
+        [HttpPost]
+        [Route("[controller]/Add")]
+        public async Task<IActionResult> AddStudentAsync([FromBody] DataModels.DTO.AddStudentRequest request)
+        {
+            var student = await sqlStudentRepository.AddStudent(mapper.Map<DataModels.Domain.Student>(request));
+            return CreatedAtAction(nameof(GetStudentByIdAsync), new { studentId = student.Id},
+                mapper.Map<DataModels.DTO.Student>(student));
+
         }
     }
 }
