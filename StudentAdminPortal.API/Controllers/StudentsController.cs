@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace StudentAdminPortal.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    
     public class StudentsController : Controller
     {
         private readonly IStudentRepository sqlStudentRepository;
@@ -19,11 +19,12 @@ namespace StudentAdminPortal.API.Controllers
         }
 
         [HttpGet]
+        [Route("[controller]")]
         public async Task<IActionResult> GetStudentsAsync()
         {
             var students = await sqlStudentRepository.GetStudentsAsync();
 
-            // You can use this page line of code below or you can you the 1 liner code in line 57 to directly map the Domain to DTO.
+            // You can use this line of code below or you can use the 1 liner code in line 57 to directly map the Domain to DTO.
 
             //var studentsDTO = new List<DataModels.DTO.Student>();
             //students.ForEach(student =>
@@ -56,6 +57,20 @@ namespace StudentAdminPortal.API.Controllers
 
             var studentsDTO = mapper.Map<List<DataModels.DTO.Student>>(students);
             return Ok(studentsDTO);
+        }
+
+        [HttpGet]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> GetStudentByIdAsync([FromRoute] Guid studentId)
+        {
+            var student = await sqlStudentRepository.GetStudentByIdAsync(studentId);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<DataModels.DTO.Student>(student));
         }
     }
 }
