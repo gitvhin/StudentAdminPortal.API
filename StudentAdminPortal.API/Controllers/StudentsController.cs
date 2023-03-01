@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using StudentAdminPortal.API.DataModels.Domain;
+using StudentAdminPortal.API.DataModels.DTO;
 using StudentAdminPortal.API.Repositories;
 using System.Collections.Generic;
 
 namespace StudentAdminPortal.API.Controllers
 {
     [ApiController]
-    
+
     public class StudentsController : Controller
     {
         private readonly IStudentRepository sqlStudentRepository;
@@ -25,7 +27,7 @@ namespace StudentAdminPortal.API.Controllers
             var students = await sqlStudentRepository.GetStudentsAsync();
 
             // You can use this line of code below or you can use the 1 liner code in line 57 to directly map the Domain to DTO.
-
+            #region Mapper
             //var studentsDTO = new List<DataModels.DTO.Student>();
             //students.ForEach(student =>
             //{
@@ -53,7 +55,7 @@ namespace StudentAdminPortal.API.Controllers
             //    };
             //    studentsDTO.Add(studentDTO);
             //});
-
+            #endregion
 
             var studentsDTO = mapper.Map<List<DataModels.DTO.Student>>(students);
             return Ok(studentsDTO);
@@ -71,6 +73,21 @@ namespace StudentAdminPortal.API.Controllers
             }
 
             return Ok(mapper.Map<DataModels.DTO.Student>(student));
+        }
+
+        [HttpPut]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> UpdateStudentAsync([FromRoute] Guid studentId, [FromBody] DataModels.DTO.UpdateStudentRequest request)
+        {
+            if (await sqlStudentRepository.Exists(studentId))
+            {
+                var updateStudent = await sqlStudentRepository.UpdateStudent(studentId, mapper.Map<DataModels.Domain.Student>(request));
+                if (updateStudent != null)
+                {
+                    return Ok(mapper.Map<DataModels.DTO.Student>(updateStudent));
+                }
+            }
+            return NotFound();
         }
     }
 }
